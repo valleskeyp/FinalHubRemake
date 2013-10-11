@@ -186,7 +186,7 @@ public class MenuScreen implements Screen, InputProcessor {
 
         Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
         if (start_button.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
-        	((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(platformInterface));
+        	((Game) Gdx.app.getApplicationListener()).setScreen(new LoadingScreen(platformInterface));
 		}
         if (help_button.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
         	((Game) Gdx.app.getApplicationListener()).setScreen(new HelpScreen(platformInterface));

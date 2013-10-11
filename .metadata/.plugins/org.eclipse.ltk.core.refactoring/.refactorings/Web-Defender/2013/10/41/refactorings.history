@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Extract method &apos;private void makeAnimations()&apos; from &apos;com.valleskeyp.WebDefender.screens.GameScreen.show()&apos; to &apos;com.valleskeyp.WebDefender.screens.GameScreen&apos;&#x0A;- Original project: &apos;Web-Defender&apos;&#x0A;- Method name: &apos;makeAnimations&apos;&#x0A;- Destination type: &apos;com.valleskeyp.WebDefender.screens.GameScreen&apos;&#x0A;- Declared visibility: &apos;private&apos;" comments="false" description="Extract method &apos;makeAnimations&apos;" destination="0" exceptions="false" flags="786434" id="org.eclipse.jdt.ui.extract.method" input="/src&lt;com.valleskeyp.WebDefender.screens{GameScreen.java" name="makeAnimations" replace="false" selection="2946 1794" stamp="1381434422170" version="1.0" visibility="2"/>
+</session>
