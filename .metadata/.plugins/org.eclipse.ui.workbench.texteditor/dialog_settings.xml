@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item value="263" key="DIALOG_WIDTH"/>
+		<item value="174" key="DIALOG_Y_ORIGIN"/>
+		<item value="399" key="DIALOG_HEIGHT"/>
+		<item value="889" key="DIALOG_X_ORIGIN"/>
+		<item value="1|Lucida Grande|11.0|0|COCOA|1|LucidaGrande" key="DIALOG_FONT_NAME"/>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item value="true" key="wrap"/>
+		<item value="false" key="isRegEx"/>
+		<item value="false" key="casesensitive"/>
+		<item value="false" key="incremental"/>
+		<item value="false" key="wholeword"/>
+		<item value="mUnknownErrorMessage" key="selection"/>
+		<list key="findhistory">
+			<item value="munknownerrormessage"/>
+			<item value="Unknown error"/>
+			<item value="unknown error"/>
+			<item value="playAgain"/>
+			<item value="bigLeaf"/>
+			<item value="gameOverText"/>
+			<item value="instructionPage"/>
+			<item value="data/cardFlip2.png"/>
+		</list>
+		<list key="replacehistory">
+			<item value="scoreButton"/>
+			<item value="quitGame"/>
+			<item value="playAgain"/>
+			<item value="bigLeaf"/>
+			<item value="loadingScreen"/>
+			<item value="data/fightAnimation/fightCloud0.png"/>
+			<item value="200, 170"/>
+		</list>
+	</section>
+</section>

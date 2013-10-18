@@ -29,13 +29,13 @@ public class HelpScreen implements Screen, InputProcessor {
 	public void show() {
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
-		
+
 		camera = new OrthographicCamera(1, h/w);
 		batch = new SpriteBatch();
 		Gdx.input.setInputProcessor(this);
 		Gdx.input.setCatchBackKey(true);
 				
-		texture = new Texture(Gdx.files.internal("data/instructions.png"));
+		texture = new Texture(Gdx.files.internal("data/new_instructions.png"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
 		TextureRegion region = new TextureRegion(texture, 0, 0, 800, 480);

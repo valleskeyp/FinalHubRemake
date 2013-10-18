@@ -22,6 +22,7 @@ public class MenuScreen implements Screen, InputProcessor {
 	private Sprite start_button, help_button, defender_logo, dangle_menu, leaf_back, login, logout, highScore, achievements;
 	private boolean loggedIn = false;
 	GoogleInterface platformInterface;
+	private float timer = 0;
 	
 	public MenuScreen(GoogleInterface aInterface) {
 		platformInterface = aInterface;
@@ -145,9 +146,13 @@ public class MenuScreen implements Screen, InputProcessor {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
+		if (!loggedIn && platformInterface.getSignedIn()) {
+			loggedIn = true;
+		}
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
+		float dt = Gdx.graphics.getDeltaTime();
+		timer += dt;
 		leaf_back.draw(batch);
 		dangle_menu.draw(batch);
 		start_button.draw(batch);
@@ -185,27 +190,26 @@ public class MenuScreen implements Screen, InputProcessor {
         touchPos.set(Gdx.input.getX(), Gdx.input.getY());
 
         Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
-        if (start_button.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
-        	((Game) Gdx.app.getApplicationListener()).setScreen(new LoadingScreen(platformInterface));
-		}
-        if (help_button.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
-        	((Game) Gdx.app.getApplicationListener()).setScreen(new HelpScreen(platformInterface));
-		}
-        
-        if (login.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y) && loggedIn == false) {
-			platformInterface.login();
-			loggedIn = true;
-		} else if (logout.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y) && loggedIn == true) {
-			platformInterface.logout();
-			loggedIn = false;
-		}
-        
-        if (loggedIn) {
-			if (highScore.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
-				platformInterface.getScores();
+        if (timer > 1) {
+        	if (start_button.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
+				((Game) Gdx.app.getApplicationListener()).setScreen(new LoadingScreen(platformInterface));
 			}
-			if (achievements.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
-				platformInterface.getAchievementData();
+			if (help_button.getBoundingRectangle().contains(cameraRay.origin.x,cameraRay.origin.y)) {
+				((Game) Gdx.app.getApplicationListener()).setScreen(new HelpScreen(platformInterface));
+			}
+			if (login.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y) && loggedIn == false) {
+				platformInterface.login();
+			} else if (logout.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y) && loggedIn == true) {
+				platformInterface.logout();
+				loggedIn = false;
+			}
+			if (platformInterface.getSignedIn()) {
+				if (highScore.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
+					platformInterface.getScores();
+				}
+				if (achievements.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
+					platformInterface.getAchievementData();
+				}
 			}
 		}
 		return false;

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Web Defend</string>
+    <string name="app_name" translatable="false">Web Defend</string>
     
-    <string name="leaderBoardID">CgkIkLyn2oUdEAIQAQ</string>
+    <string name="leaderBoardID" translatable="false">CgkIkLyn2oUdEAIQAQ</string>
     
-    <string name="ach_smallFry">CgkIkLyn2oUdEAIQCQ</string>
-    <string name="ach_middleMan">CgkIkLyn2oUdEAIQCg</string>
-    <string name="ach_heavyLift">CgkIkLyn2oUdEAIQCw</string>
-    <string name="ach_brawlin">CgkIkLyn2oUdEAIQDA</string>
-    <string name="ach_survive">CgkIkLyn2oUdEAIQDQ</string>
-    <string name="ach_surviveMedium">CgkIkLyn2oUdEAIQDg</string>
-    <string name="ach_surviveHard">CgkIkLyn2oUdEAIQDw</string>
+    <string name="ach_smallFry" translatable="false">CgkIkLyn2oUdEAIQCQ</string>
+    <string name="ach_middleMan" translatable="false">CgkIkLyn2oUdEAIQCg</string>
+    <string name="ach_heavyLift" translatable="false">CgkIkLyn2oUdEAIQCw</string>
+    <string name="ach_brawlin" translatable="false">CgkIkLyn2oUdEAIQDA</string>
+    <string name="ach_survive" translatable="false">CgkIkLyn2oUdEAIQDQ</string>
+    <string name="ach_surviveMedium" translatable="false">CgkIkLyn2oUdEAIQDg</string>
+    <string name="ach_surviveHard" translatable="false">CgkIkLyn2oUdEAIQDw</string>
 </resources>

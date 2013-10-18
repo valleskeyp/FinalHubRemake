@@ -135,7 +135,7 @@ public class GameHelper implements GooglePlayServicesClient.ConnectionCallbacks,
     // Messages (can be set by the developer).
     String mSigningInMessage = "";
     String mSigningOutMessage = "";
-    String mUnknownErrorMessage = "Unknown error";
+    String mUnknownErrorMessage = "Unknown error, please check connection.";
 
     // If we got an invitation id when we connected to the games client, it's
     // here.

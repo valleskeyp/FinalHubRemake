@@ -1,0 +1,257 @@
+package com.valleskeyp.WebDefender.screens;
+
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.collision.Ray;
+import com.valleskeyp.WebDefender.GoogleInterface;
+
+public class MenuScreen implements Screen, InputProcessor {
+	private OrthographicCamera camera;
+	private SpriteBatch batch;
+	private Texture texture;
+	private Sprite start_button, help_button, defender_logo, dangle_menu, leaf_back, login, logout, highScore, achievements;
+	private boolean loggedIn = false;
+	GoogleInterface platformInterface;
+	
+	public MenuScreen(GoogleInterface aInterface) {
+		platformInterface = aInterface;
+		loggedIn = platformInterface.getSignedIn();
+	}
+
+	@Override
+	public void show() {
+		float w = Gdx.graphics.getWidth();
+		float h = Gdx.graphics.getHeight();
+		
+		camera = new OrthographicCamera(1000, 1000*h/w);
+		batch = new SpriteBatch();
+		Gdx.input.setInputProcessor(this);
+		Gdx.input.setCatchBackKey(true);
+		
+		texture = new Texture(Gdx.files.internal("data/start_button.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		TextureRegion region = new TextureRegion(texture, 0, 0, 128, 64);
+		
+		start_button = new Sprite(region);
+		start_button.setSize(1000*0.16f, 1000*0.08f);
+		start_button.setOrigin(start_button.getWidth()/2, start_button.getHeight()/2);
+		start_button.setPosition(-start_button.getWidth()/2+1000*.022f, 1000*-.05f);
+		
+		texture = new Texture(Gdx.files.internal("data/help_button.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		region = new TextureRegion(texture, 0, 0, 128, 64);
+		
+		help_button = new Sprite(region);
+		help_button.setSize(1000*0.16f, 1000*0.08f);
+		help_button.setOrigin(help_button.getWidth()/2, help_button.getHeight()/2);
+		help_button.setPosition(-help_button.getWidth()/2+1000*.022f, 1000*-.15f);
+		
+		// logo
+		
+		
+		texture = new Texture(Gdx.files.internal("data/defender_logo.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		region = new TextureRegion(texture, 0, 0, 512, 128);
+		
+		defender_logo = new Sprite(region);
+		defender_logo.setSize(1000*0.512f, 1000*0.13f);
+		defender_logo.setOrigin(defender_logo.getWidth()/2, defender_logo.getHeight()/2);
+		defender_logo.setPosition(-defender_logo.getWidth()/2+1000*.005f, 1000*.1f);
+		
+		// menu
+		
+		
+		texture = new Texture(Gdx.files.internal("data/dangle_spider_menu2.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		region = new TextureRegion(texture, 0, 0, 128, 340);
+		
+		dangle_menu = new Sprite(region);
+		dangle_menu.setSize(1000*0.178f, 1000*0.4f);
+		dangle_menu.setOrigin(dangle_menu.getWidth()/2, dangle_menu.getHeight()/2);
+		dangle_menu.setPosition(-dangle_menu.getWidth()/2-1000*.006f, 1000*-.1f);
+		
+		texture = new Texture(Gdx.files.internal("data/background.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		region = new TextureRegion(texture, 0, 0, 800, 480);
+		
+		leaf_back = new Sprite(region);
+		leaf_back.setSize(1000*1f, 1000*1f * leaf_back.getHeight() / leaf_back.getWidth());
+		leaf_back.setOrigin(leaf_back.getWidth()/2, leaf_back.getHeight()/2);
+		leaf_back.setPosition(-leaf_back.getWidth()/2, -leaf_back.getHeight()/2);
+		
+		
+		// Google play buttons
+		
+		
+		texture = new Texture(Gdx.files.internal("data/login.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		region = new TextureRegion(texture, 0, 0, 138, 47);
+		
+		login = new Sprite(region);
+		login.setSize(1000*.2f, 1000*.07f);
+		login.setOrigin(login.getWidth()/2, login.getHeight()/2);
+		login.setPosition(1000*-.45f, 1000*-.26f);
+		
+		texture = new Texture(Gdx.files.internal("data/logout.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		region = new TextureRegion(texture, 0, 0, 138, 47);
+		
+		logout = new Sprite(region);
+		logout.setSize(1000*.2f, 1000*.07f);
+		logout.setOrigin(logout.getWidth()/2, logout.getHeight()/2);
+		logout.setPosition(1000*-.45f, 1000*-.26f);
+		
+		//-
+		
+		texture = new Texture(Gdx.files.internal("data/highScore.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		region = new TextureRegion(texture, 0, 0, 138, 47);
+		
+		highScore = new Sprite(region);
+		highScore.setSize(1000*.2f, 1000*.07f);
+		highScore.setOrigin(highScore.getWidth()/2, highScore.getHeight()/2);
+		highScore.setPosition(1000*.01f-highScore.getWidth()/2, 1000*-.26f);
+		
+		texture = new Texture(Gdx.files.internal("data/achievements.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		region = new TextureRegion(texture, 0, 0, 138, 47);
+		
+		achievements = new Sprite(region);
+		achievements.setSize(1000*.2f, 1000*.07f);
+		achievements.setOrigin(achievements.getWidth()/2, achievements.getHeight()/2);
+		achievements.setPosition(1000*.45f-achievements.getWidth(), 1000*-.26f);
+	}
+	
+	@Override
+	public void render(float delta) {
+		Gdx.gl.glClearColor(1, 1, 1, 1);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		
+		batch.setProjectionMatrix(camera.combined);
+		batch.begin();
+		leaf_back.draw(batch);
+		dangle_menu.draw(batch);
+		start_button.draw(batch);
+		help_button.draw(batch);
+		defender_logo.draw(batch);
+		if (!loggedIn) {
+			login.draw(batch);
+		} else {
+			logout.draw(batch);
+			highScore.draw(batch);
+			achievements.draw(batch);
+		}
+		batch.end();
+	}
+
+	@Override
+	public void pause() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resume() {
+	}
+
+	@Override
+	public void dispose() {
+		batch.dispose();
+		texture.dispose();
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		Vector2 touchPos = new Vector2();
+        touchPos.set(Gdx.input.getX(), Gdx.input.getY());
+
+        Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
+        if (start_button.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
+        	((Game) Gdx.app.getApplicationListener()).setScreen(new LoadingScreen(platformInterface));
+		}
+        if (help_button.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
+        	((Game) Gdx.app.getApplicationListener()).setScreen(new HelpScreen(platformInterface));
+		}
+        
+        if (login.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y) && loggedIn == false) {
+			platformInterface.login();
+			loggedIn = true;
+		} else if (logout.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y) && loggedIn == true) {
+			platformInterface.logout();
+			loggedIn = false;
+		}
+        
+        if (loggedIn) {
+			if (highScore.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
+				platformInterface.getScores();
+			}
+			if (achievements.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
+				platformInterface.getAchievementData();
+			}
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean keyDown(int keycode) {
+		return false;
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		return false;
+	}
+
+	@Override
+	public boolean keyTyped(char character) {
+		return false;
+	}
+
+	@Override
+	public void resize(int width, int height) {
+	}
+
+	@Override
+	public void hide() {
+	}
+	
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		return false;
+	}
+	
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		return false;
+	}
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		return false;
+	}
+
+	@Override
+	public boolean scrolled(int amount) {
+		return false;
+	}
+
+}

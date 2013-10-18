@@ -4,9 +4,9 @@ import java.util.HashMap;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -36,7 +36,7 @@ public class GameScreen implements Screen, InputProcessor {
 	public Array<Fly> flies;
 	public Array<Web> webbing;
 	
-	float spawn_timer = 0, fight_timer = 999, totalTime = 0, spiderTime = 0;
+	float spawn_timer = 0, fight_timer = 999, totalTime = 0, spiderTime = 0, modifier = 6;
 	
 	private Array<HashMap<String, Float>> flySlots;
 	private Array<Integer> flyCheck;
@@ -44,7 +44,7 @@ public class GameScreen implements Screen, InputProcessor {
 	GoogleInterface platformInterface;
 	FreeTypeBitmapFontData font;
 	private BitmapFont scoreText;
-	private Animation spiderAnimation, fightAnimation, flyAnimation;
+	private Animation spiderAnimation, fightAnimation;
 	private float fightingX, fightingY;
 	
 	public GameScreen(GoogleInterface aInterface) {
@@ -56,11 +56,11 @@ public class GameScreen implements Screen, InputProcessor {
 	@Override
 	public void show() {
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("data/PermanentMarker.ttf"));
-		font = generator.generateData(50);
+		font = generator.generateData(45);
 		generator.dispose();
 		
 		scoreText = new BitmapFont(font, font.getTextureRegion(), false);
-		scoreText.setColor(00, 300, 00, 1);
+		scoreText.setColor(0, 0, 0, 1);
 		
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
@@ -110,25 +110,30 @@ public class GameScreen implements Screen, InputProcessor {
 		
 		batch.begin();
 		
-		totalTime += dt;
-		if (totalTime > 60 && loggedIn) {
-			if (difficulty == 1 && survived != true) {
-				platformInterface.unlockAchievement("ach_survive");
-				survived = true;
-			} else if (difficulty == 2 && survivedMedium != true) {
-				platformInterface.unlockAchievement("ach_surviveMedium");
-				survivedMedium = true;
-			} else if (difficulty == 3 && survivedHard != true) {
-				platformInterface.unlockAchievement("ach_surviveHard");
-				survivedHard = true;
-			}
-		}
 		if (difficulty > 0) {
-			if (fliesEscaped < (6 - difficulty)) { //----// NORMAL GAMEPLAY
+			totalTime += dt;
+			if (totalTime > 60 && loggedIn) {
+				if (difficulty == 1 && survived != true) {
+					platformInterface.unlockAchievement("ach_survive");
+					survived = true;
+				} else if (difficulty == 2 && survivedMedium != true) {
+					platformInterface.unlockAchievement("ach_surviveMedium");
+					survivedMedium = true;
+				} else if (difficulty == 3 && survivedHard != true) {
+					platformInterface.unlockAchievement("ach_surviveHard");
+					survivedHard = true;
+				}
+			}
+			if (fliesEscaped < (6 - difficulty)) {     										//----// NORMAL GAMEPLAY
 				spawn_timer += dt;
-
-				if (spawn_timer >= (6 - difficulty)) {
+				if (spawn_timer >= (modifier - difficulty)) {
+					modifier -= dt;
+					if (modifier <= difficulty + 1) {
+						modifier = difficulty +1;
+					}
+					Gdx.app.log("MODIFIER", ""+modifier);
 					spawn_timer = 0;
+					spawnFly();
 					spawnFly();
 				}
 
@@ -143,7 +148,7 @@ public class GameScreen implements Screen, InputProcessor {
 				
 				//  ----------------------------------------------------------------------------------------------- DRAW SCORE
 				scoreText.setFixedWidthGlyphs("Score: " + score);
-				scoreText.draw(batch, "Score: " + score, -200, -23);
+				scoreText.draw(batch, "Score: " + score, -scoreText.getBounds("Score: " + score).width/2, -23);
 				
 				for (Web web : webbing) {// draw web squares
 					web.draw(batch, dt);
@@ -216,16 +221,35 @@ public class GameScreen implements Screen, InputProcessor {
 							fliesEscaped += 1;
 							for (Web web : webbing) {
 								if (web.slotNumber == fly.slotNumber) {
-									web.breakWeb(); //TODO fly escaping animation?
+									web.breakWeb();
 								}
 							}
+							fly.texture.dispose();
 							flies.removeValue(fly, true);
 						}
 					}
 				}
-			} else { //----// GAME OVER
+			} else { 																			//----// GAME OVER
 				if (loggedIn) {
 					platformInterface.submitScore(score);
+					
+					if (smallFly > 0 && loggedIn) {
+						platformInterface.incrementAchievement("ach_smallFry", smallFly);
+						smallFly = 0;
+					}
+					if (mediumFly > 0 && loggedIn) {
+						platformInterface.incrementAchievement("ach_middleMan", mediumFly);
+						mediumFly = 0;
+					}
+					if (largeFly > 0 && loggedIn) {
+						platformInterface.incrementAchievement("ach_heavyLift", largeFly);
+						largeFly = 0;
+					}
+					if (timesFought > 0 && loggedIn) {
+						platformInterface.incrementAchievement("ach_brawlin", timesFought);
+						timesFought = 0;
+					}
+					
 					if (smallFly > 0) {
 						platformInterface.incrementAchievement("ach_smallFry", smallFly);
 					}
@@ -243,19 +267,39 @@ public class GameScreen implements Screen, InputProcessor {
 					largeFly = 0;
 					timesFought = 0;
 				}
-				score = 0;
+				for (Fly fly : flies) {
+					fly.texture.dispose();
+				}
+				for (Web web : webbing) {
+					web.texture.dispose();
+				}
+				flies.clear();
+				webbing.clear();
+				flyCheck.clear();
+				
+				makeWeb();
+				makeFlySlots();
+				fliesEscaped = 0;
+				spider.setPosition(-spider.getWidth()/2, -spider.getHeight()/2);
+				
 				move_spider = false;
 				leaf_back.draw(batch);
 				sprite.draw(batch);
 				for (Web web : webbing) {// draw web squares
 					web.draw(batch, dt);
 				}
+				modifier = 6;
+				totalTime = 0;
 				spider.draw(batch);
 				shadow.draw(batch);
 				bigLeaf.draw(batch);
 				playAgain.draw(batch);
 				quitGame.draw(batch);
-				scoreButton.draw(batch);
+				if (loggedIn) {
+					scoreButton.draw(batch);
+				}
+				scoreText.setFixedWidthGlyphs("" + score);
+				scoreText.draw(batch, "" + score, -scoreText.getBounds(""+score).width/2, 120);
 			}
 		} else {
 			leaf_back.draw(batch);
@@ -289,6 +333,7 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 		batch.dispose();
 		texture.dispose();
+		scoreText.dispose();
 		for (Fly fly : flies) {
 			fly.texture.dispose();
 		}
@@ -317,20 +362,13 @@ public class GameScreen implements Screen, InputProcessor {
         
         Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
 		if (fliesEscaped > (5 - difficulty) && playAgain.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
-			flies.clear();
-			webbing.clear();
-			flyCheck.clear();
-			
-			makeWeb();
-			makeFlySlots();
-			fliesEscaped = 0;
+			score = 0;
 			difficulty = 0;
-			spider.setPosition(-spider.getWidth()/2, -spider.getHeight()/2);
 		}
 		if (fliesEscaped > (5 - difficulty) && quitGame.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
 			((Game) Gdx.app.getApplicationListener()).setScreen(new MenuScreen(platformInterface));
 		}
-		if (fliesEscaped > (5 - difficulty) && scoreButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
+		if (fliesEscaped > (5 - difficulty) && loggedIn && scoreButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
 			platformInterface.getScores();
 		}
 		if (difficulty == 0 && easy.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
@@ -362,7 +400,7 @@ public class GameScreen implements Screen, InputProcessor {
 			Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
 			
 			spider.setX(cameraRay.origin.x - (spider.getWidth()/2));
-			spider.setY(cameraRay.origin.y);
+			spider.setY(cameraRay.origin.y - (spider.getWidth()/2));
 		}
 		return false;
 	}
@@ -371,8 +409,10 @@ public class GameScreen implements Screen, InputProcessor {
 		int flySize;
 		if (difficulty == 1) {
 			flySize = (int) (Math.random() * 4) + 1;
-		} else {
+		} else if (difficulty == 2) {
 			flySize = (int) (Math.random() * 4) + 2;
+		} else {
+			flySize = (int) (Math.random() * 4) + 3;
 		}
 		
 		int slotChosen = 0;
@@ -555,7 +595,7 @@ public class GameScreen implements Screen, InputProcessor {
 		playAgain = new Sprite(region);
 		playAgain.setSize(1000*.128f, 1000*.064f);
 		playAgain.setOrigin(playAgain.getWidth()/2, playAgain.getHeight()/2);
-		playAgain.setPosition(-playAgain.getWidth()/2, 125f);
+		playAgain.setPosition(-playAgain.getWidth()/2, -25f);
 		
 		texture = new Texture(Gdx.files.internal("data/quitGame.png"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -565,7 +605,7 @@ public class GameScreen implements Screen, InputProcessor {
 		quitGame = new Sprite(region);
 		quitGame.setSize(1000*.128f, 1000*.064f);
 		quitGame.setOrigin(quitGame.getWidth()/2, quitGame.getHeight()/2);
-		quitGame.setPosition(-quitGame.getWidth()/2, 0f);
+		quitGame.setPosition(-quitGame.getWidth()/2, -140f);
 		
 		texture = new Texture(Gdx.files.internal("data/scoreButton.png"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -575,7 +615,7 @@ public class GameScreen implements Screen, InputProcessor {
 		scoreButton = new Sprite(region);
 		scoreButton.setSize(1000*.128f, 1000*.064f);
 		scoreButton.setOrigin(scoreButton.getWidth()/2, scoreButton.getHeight()/2);
-		scoreButton.setPosition(-scoreButton.getWidth()/2, -125f);
+		scoreButton.setPosition(-scoreButton.getWidth()/2, 130f);
 		
 		texture = new Texture(Gdx.files.internal("data/easyButton.png"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);

@@ -123,6 +123,25 @@ public class Fly {
 			);
 			animation.setPlayMode(Animation.LOOP);
 			break;
+		case 6: // large fly
+			xSize = 1000*.155f;
+			ySize = 1000*.135f;
+			texture = new Texture(Gdx.files.internal("data/flies/largeFly.png"));
+			texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			
+			region = new TextureRegion(texture, 0, 0, 212, 143);
+			
+			fly_sprite = new Sprite(region);
+			fly_sprite.setSize(1000*.155f, 1000*.135f);
+			fly_sprite.setOrigin(fly_sprite.getWidth()/2, fly_sprite.getHeight()/2);
+			fly_sprite.setPosition(x, y);
+			
+			animation = new Animation(1/2f,
+					new TextureRegion(new Texture(Gdx.files.internal("data/flies/largeFly.png")), 0, 0, 212, 143),
+					new TextureRegion(new Texture(Gdx.files.internal("data/flies/largeFly1.png")), 0, 0, 212, 143)
+			);
+			animation.setPlayMode(Animation.LOOP);
+			break;
 		default:
 			break;
 		}
@@ -159,6 +178,11 @@ public class Fly {
 			break;
 		case 5: // medium fly
 			if (breakOutTimer > 8) {
+				escaped = true;
+			}
+			break;
+		case 6: // large fly
+			if (breakOutTimer > 5) {
 				escaped = true;
 			}
 			break;
