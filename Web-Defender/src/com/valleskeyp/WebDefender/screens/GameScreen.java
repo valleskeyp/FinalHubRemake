@@ -212,6 +212,10 @@ public class GameScreen implements Screen, InputProcessor {
 								score += (int) ((totalTime/5) + 1) * (10 * difficulty);
 								mediumFly += 1;
 								break;
+							case 6: // medium fly
+								score += (int) ((totalTime/5) + 1) * (15 * difficulty);
+								largeFly += 1;
+								break;
 							default:
 								break;
 							}
@@ -230,66 +234,71 @@ public class GameScreen implements Screen, InputProcessor {
 					}
 				}
 			} else { 																			//----// GAME OVER
-				if (loggedIn) {
-					platformInterface.submitScore(score);
-					
-					if (smallFly > 0 && loggedIn) {
-						platformInterface.incrementAchievement("ach_smallFry", smallFly);
+				if (totalTime > 0) {
+					if (loggedIn) {
+						if (score > 0) {
+							platformInterface.submitScore(score);
+						}
+						if (smallFly > 0 && loggedIn) {
+							platformInterface.incrementAchievement("ach_smallFry", smallFly);
+							smallFly = 0;
+						}
+						if (mediumFly > 0 && loggedIn) {
+							platformInterface.incrementAchievement("ach_middleMan", mediumFly);
+							mediumFly = 0;
+						}
+						if (largeFly > 0 && loggedIn) {
+							platformInterface.incrementAchievement("ach_heavyLift", largeFly);
+							largeFly = 0;
+						}
+						if (timesFought > 0 && loggedIn) {
+							platformInterface.incrementAchievement("ach_brawlin", timesFought);
+							timesFought = 0;
+						}
+
+						if (smallFly > 0) {
+							platformInterface.incrementAchievement("ach_smallFry", smallFly);
+						}
+						if (mediumFly > 0) {
+							platformInterface.incrementAchievement("ach_middleMan", mediumFly);
+						}
+						if (largeFly > 0) {
+							platformInterface.incrementAchievement("ach_heavyLift", largeFly);
+						}
+						if (timesFought > 0) {
+							platformInterface.incrementAchievement("ach_brawlin", timesFought);
+						}
 						smallFly = 0;
-					}
-					if (mediumFly > 0 && loggedIn) {
-						platformInterface.incrementAchievement("ach_middleMan", mediumFly);
 						mediumFly = 0;
-					}
-					if (largeFly > 0 && loggedIn) {
-						platformInterface.incrementAchievement("ach_heavyLift", largeFly);
 						largeFly = 0;
-					}
-					if (timesFought > 0 && loggedIn) {
-						platformInterface.incrementAchievement("ach_brawlin", timesFought);
 						timesFought = 0;
 					}
-					
-					if (smallFly > 0) {
-						platformInterface.incrementAchievement("ach_smallFry", smallFly);
-					}
-					if (mediumFly > 0) {
-						platformInterface.incrementAchievement("ach_middleMan", mediumFly);
-					}
-					if (largeFly > 0) {
-						platformInterface.incrementAchievement("ach_heavyLift", largeFly);
-					}
-					if (timesFought > 0) {
-						platformInterface.incrementAchievement("ach_brawlin", timesFought);
-					}
-					smallFly = 0;
-					mediumFly = 0;
-					largeFly = 0;
-					timesFought = 0;
 				}
-				for (Fly fly : flies) {
-					fly.texture.dispose();
+				if (fliesEscaped > 0) {
+					modifier = 6;
+					totalTime = 0;
+					for (Fly fly : flies) {
+						fly.texture.dispose();
+					}
+					for (Web web : webbing) {
+						web.texture.dispose();
+					}
+					flies.clear();
+					webbing.clear();
+					flyCheck.clear();
+					makeWeb();
+					makeFlySlots();
+					spider.setPosition(-spider.getWidth()/2, -spider.getHeight()/2);
+					move_spider = false; // moved the auto start over glitch out into START new game.  still bugged?
 				}
-				for (Web web : webbing) {
-					web.texture.dispose();
-				}
-				flies.clear();
-				webbing.clear();
-				flyCheck.clear();
 				
-				makeWeb();
-				makeFlySlots();
-				fliesEscaped = 0;
-				spider.setPosition(-spider.getWidth()/2, -spider.getHeight()/2);
+																// drawing game over
 				
-				move_spider = false;
 				leaf_back.draw(batch);
 				sprite.draw(batch);
 				for (Web web : webbing) {// draw web squares
 					web.draw(batch, dt);
 				}
-				modifier = 6;
-				totalTime = 0;
 				spider.draw(batch);
 				shadow.draw(batch);
 				bigLeaf.draw(batch);
@@ -364,6 +373,7 @@ public class GameScreen implements Screen, InputProcessor {
 		if (fliesEscaped > (5 - difficulty) && playAgain.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
 			score = 0;
 			difficulty = 0;
+			fliesEscaped = 0;
 		}
 		if (fliesEscaped > (5 - difficulty) && quitGame.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
 			((Game) Gdx.app.getApplicationListener()).setScreen(new MenuScreen(platformInterface));
@@ -678,11 +688,6 @@ public class GameScreen implements Screen, InputProcessor {
 				new TextureRegion(new Texture(Gdx.files.internal("data/spiderAnimation/spiderAnimation3.png")), 0, 0, 128, 100)
 		);
 		spiderAnimation.setPlayMode(Animation.LOOP);
-//		flyAnimation = new Animation(1/3f,
-//				new TextureRegion(new Texture(Gdx.files.internal("data/cardFlip1.png")), 0, 0, 80, 115),
-//				new TextureRegion(new Texture(Gdx.files.internal("data/cardFlip2.png")), 0, 0, 80, 115),
-//				new TextureRegion(new Texture(Gdx.files.internal("data/cardFlip3.png")), 0, 0, 80, 115)
-//		);
 	}
 	
 	@Override

@@ -148,6 +148,8 @@ public class MenuScreen implements Screen, InputProcessor {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		if (!loggedIn && platformInterface.getSignedIn()) {
 			loggedIn = true;
+		} else if (!platformInterface.getSignedIn()) {
+			loggedIn = false;
 		}
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
