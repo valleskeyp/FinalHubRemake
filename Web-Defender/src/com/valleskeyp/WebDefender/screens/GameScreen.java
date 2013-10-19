@@ -111,7 +111,7 @@ public class GameScreen implements Screen, InputProcessor {
 		batch.begin();
 		
 		if (difficulty > 0) {
-			totalTime += dt;
+			
 			if (totalTime > 60 && loggedIn) {
 				if (difficulty == 1 && survived != true) {
 					platformInterface.unlockAchievement("ach_survive");
@@ -125,6 +125,7 @@ public class GameScreen implements Screen, InputProcessor {
 				}
 			}
 			if (fliesEscaped < (6 - difficulty)) {     										//----// NORMAL GAMEPLAY
+				totalTime += dt;
 				spawn_timer += dt;
 				if (spawn_timer >= (modifier - difficulty)) {
 					modifier -= dt;
@@ -287,7 +288,7 @@ public class GameScreen implements Screen, InputProcessor {
 					webbing.clear();
 					flyCheck.clear();
 					makeWeb();
-					makeFlySlots();
+					//makeFlySlots();
 					spider.setPosition(-spider.getWidth()/2, -spider.getHeight()/2);
 					move_spider = false; // moved the auto start over glitch out into START new game.  still bugged?
 				}
@@ -697,7 +698,7 @@ public class GameScreen implements Screen, InputProcessor {
 		generator.dispose();
 		
 		scoreText = new BitmapFont(font, font.getTextureRegion(), false);
-		scoreText.setColor(00, 300, 00, 1);
+		scoreText.setColor(0, 0, 0, 1);
 	}
 	
 	// Unused methods --------------------------------------------------------------------------------------------------------
