@@ -236,7 +236,7 @@ public class GameScreen implements Screen, InputProcessor {
 			} else { 																			//----// GAME OVER
 				if (totalTime > 0) {
 					if (loggedIn) {
-						if (score > 0) {
+						if (score > 0 && totalTime > 0) {
 							platformInterface.submitScore(score);
 						}
 						if (smallFly > 0 && loggedIn) {
@@ -274,7 +274,7 @@ public class GameScreen implements Screen, InputProcessor {
 						timesFought = 0;
 					}
 				}
-				if (totalTime > 0) {
+				if (fliesEscaped > 0) {
 					modifier = 6;
 					totalTime = 0;
 					for (Fly fly : flies) {

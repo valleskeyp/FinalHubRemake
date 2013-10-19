@@ -274,7 +274,7 @@ public class GameScreen implements Screen, InputProcessor {
 						timesFought = 0;
 					}
 				}
-				if (totalTime > 0) {
+				if (fliesEscaped > 0) {
 					modifier = 6;
 					totalTime = 0;
 					for (Fly fly : flies) {
