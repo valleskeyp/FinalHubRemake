@@ -12,7 +12,7 @@ public class Web {
 	
 	private Sprite web;
 	
-	public Texture texture;
+	public Texture texture, texture2, texture3, texture4, texture5, texture6;
 	public float xCoord, yCoord;
 	public String web_type;
 	public boolean isBroken = false;
@@ -30,6 +30,12 @@ public class Web {
 		if (web_area.equals("top")) {
 			texture = new Texture(Gdx.files.internal("data/top_web.png"));
 			texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			texture2 = new Texture(Gdx.files.internal("data/webAnimation/topWebAnimation0.png"));
+			texture3 = new Texture(Gdx.files.internal("data/webAnimation/topWebAnimation1.png"));
+			texture4 = new Texture(Gdx.files.internal("data/webAnimation/topWebAnimation2.png"));
+			texture5 = new Texture(Gdx.files.internal("data/webAnimation/topWebAnimation3.png"));
+			texture6 = new Texture(Gdx.files.internal("data/webAnimation/topWebAnimation4.png"));
+
 
 			TextureRegion region = new TextureRegion(texture, 0, 0, 160, 160);
 
@@ -39,16 +45,21 @@ public class Web {
 			web.setPosition(x, y);
 			
 			animation = new Animation(1/5f,
-					new TextureRegion(new Texture(Gdx.files.internal("data/webAnimation/topWebAnimation0.png")), 0, 0, 160, 160),
-					new TextureRegion(new Texture(Gdx.files.internal("data/webAnimation/topWebAnimation1.png")), 0, 0, 160, 160),
-					new TextureRegion(new Texture(Gdx.files.internal("data/webAnimation/topWebAnimation2.png")), 0, 0, 160, 160),
-					new TextureRegion(new Texture(Gdx.files.internal("data/webAnimation/topWebAnimation3.png")), 0, 0, 160, 160),
-					new TextureRegion(new Texture(Gdx.files.internal("data/webAnimation/topWebAnimation4.png")), 0, 0, 160, 160)
+					new TextureRegion(texture2, 0, 0, 160, 160),
+					new TextureRegion(texture3, 0, 0, 160, 160),
+					new TextureRegion(texture4, 0, 0, 160, 160),
+					new TextureRegion(texture5, 0, 0, 160, 160),
+					new TextureRegion(texture6, 0, 0, 160, 160)
 			);
 		} else if (web_area.equals("bottom")) {
 			texture = new Texture(Gdx.files.internal("data/bottom_web.png"));
 			texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-
+			texture2 = new Texture(Gdx.files.internal("data/webAnimation/botWebAnimation0.png"));
+			texture3 = new Texture(Gdx.files.internal("data/webAnimation/botWebAnimation1.png"));
+			texture4 = new Texture(Gdx.files.internal("data/webAnimation/botWebAnimation2.png"));
+			texture5 = new Texture(Gdx.files.internal("data/webAnimation/botWebAnimation3.png"));
+			texture6 = new Texture(Gdx.files.internal("data/webAnimation/botWebAnimation4.png"));
+			
 			TextureRegion region = new TextureRegion(texture, 0, 0, 160, 160);
 
 			web = new Sprite(region);
@@ -57,11 +68,11 @@ public class Web {
 			web.setPosition(x, y);
 			
 			animation = new Animation(1/5f,
-					new TextureRegion(new Texture(Gdx.files.internal("data/webAnimation/botWebAnimation0.png")), 0, 0, 160, 160),
-					new TextureRegion(new Texture(Gdx.files.internal("data/webAnimation/botWebAnimation1.png")), 0, 0, 160, 160),
-					new TextureRegion(new Texture(Gdx.files.internal("data/webAnimation/botWebAnimation2.png")), 0, 0, 160, 160),
-					new TextureRegion(new Texture(Gdx.files.internal("data/webAnimation/botWebAnimation3.png")), 0, 0, 160, 160),
-					new TextureRegion(new Texture(Gdx.files.internal("data/webAnimation/botWebAnimation4.png")), 0, 0, 160, 160)
+					new TextureRegion(texture2, 0, 0, 160, 160),
+					new TextureRegion(texture3, 0, 0, 160, 160),
+					new TextureRegion(texture4, 0, 0, 160, 160),
+					new TextureRegion(texture5, 0, 0, 160, 160),
+					new TextureRegion(texture6, 0, 0, 160, 160)
 			);
 		}
 	}
@@ -105,5 +116,14 @@ public class Web {
 			web.setOrigin(web.getWidth()/2, web.getHeight()/2);
 			web.setPosition(xCoord, yCoord);
 		}
+	}
+	
+	public void dispose() {
+		texture.dispose();
+		texture2.dispose();
+		texture3.dispose();
+		texture4.dispose();
+		texture5.dispose();
+		texture6.dispose();
 	}
 }

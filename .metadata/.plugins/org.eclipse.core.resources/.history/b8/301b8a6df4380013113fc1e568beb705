@@ -1,0 +1,201 @@
+package com.valleskeyp.WebDefender;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
+public class Fly {
+	
+	private Sprite fly_sprite;
+	private float breakOutTimer = 0;
+	
+	public Texture texture, texture2, texture3;
+	public float xCoord, yCoord;
+	public int fly_size;
+	public int slotNumber;
+	public boolean escaped = false;
+	private Animation animation;
+	private float time = 0, xSize, ySize;
+	
+	public Fly(float x, float y, int fly_type, int slot_number) { // set static data of fly(x, y, ect)
+		xCoord = x;
+		yCoord = y;
+		fly_size = fly_type;
+		slotNumber = slot_number;
+		
+		switch (fly_type) {
+		case 1: // small fly
+			xSize = 1000*.0745f;
+			ySize = 1000*.06155f;
+			texture = new Texture(Gdx.files.internal("data/flies/smallFly.png"));
+			texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			
+			TextureRegion region = new TextureRegion(texture, 0, 0, 212, 143);
+			
+			fly_sprite = new Sprite(region);
+			fly_sprite.setSize(1000*.0745f, 1000*.06155f);
+			fly_sprite.setOrigin(fly_sprite.getWidth()/2, fly_sprite.getHeight()/2);
+			fly_sprite.setPosition(x, y);
+			
+			animation = new Animation(1/2f,
+					new TextureRegion(new Texture(Gdx.files.internal("data/flies/smallFly.png")), 0, 0, 212, 143),
+					new TextureRegion(new Texture(Gdx.files.internal("data/flies/smallFly1.png")), 0, 0, 212, 143)
+			);
+			animation.setPlayMode(Animation.LOOP);
+			break;
+		case 2: // small fly
+			xSize = 1000*.0745f;
+			ySize = 1000*.06155f;
+			texture = new Texture(Gdx.files.internal("data/flies/smallFly.png"));
+			texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			
+			region = new TextureRegion(texture, 0, 0, 212, 143);
+			
+			fly_sprite = new Sprite(region);
+			fly_sprite.setSize(1000*.0745f, 1000*.06155f);
+			fly_sprite.setOrigin(fly_sprite.getWidth()/2, fly_sprite.getHeight()/2);
+			fly_sprite.setPosition(x, y);
+			
+			animation = new Animation(1/2f,
+					new TextureRegion(new Texture(Gdx.files.internal("data/flies/smallFly.png")), 0, 0, 212, 143),
+					new TextureRegion(new Texture(Gdx.files.internal("data/flies/smallFly1.png")), 0, 0, 212, 143)
+			);
+			animation.setPlayMode(Animation.LOOP);
+			break;
+		case 3: // medium fly
+			xSize = 1000*.115f;
+			ySize = 1000*.097f;
+			texture = new Texture(Gdx.files.internal("data/flies/mediumFly.png"));
+			texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			
+			region = new TextureRegion(texture, 0, 0, 212, 143);
+			
+			fly_sprite = new Sprite(region);
+			fly_sprite.setSize(1000*.115f, 1000*.097f);
+			fly_sprite.setOrigin(fly_sprite.getWidth()/2, fly_sprite.getHeight()/2);
+			fly_sprite.setPosition(x, y);
+			
+			animation = new Animation(1/2f,
+					new TextureRegion(new Texture(Gdx.files.internal("data/flies/mediumFly.png")), 0, 0, 212, 143),
+					new TextureRegion(new Texture(Gdx.files.internal("data/flies/mediumFly1.png")), 0, 0, 212, 143)
+			);
+			animation.setPlayMode(Animation.LOOP);
+			break;
+		case 4: // large fly
+			xSize = 1000*.155f;
+			ySize = 1000*.135f;
+			texture = new Texture(Gdx.files.internal("data/flies/largeFly.png"));
+			texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			texture2 = new Texture(Gdx.files.internal("data/flies/largeFly.png");
+			texture3 = new Texture(Gdx.files.internal("data/flies/largeFly1.png")
+			region = new TextureRegion(texture, 0, 0, 212, 143);
+			
+			fly_sprite = new Sprite(region);
+			fly_sprite.setSize(1000*.155f, 1000*.135f);
+			fly_sprite.setOrigin(fly_sprite.getWidth()/2, fly_sprite.getHeight()/2);
+			fly_sprite.setPosition(x, y);
+			
+			animation = new Animation(1/2f,
+					new TextureRegion(texture2), 0, 0, 212, 143),
+					new TextureRegion(texture3), 0, 0, 212, 143)
+			);
+			animation.setPlayMode(Animation.LOOP);
+			break;
+		case 5: // medium fly
+			xSize = 1000*.115f;
+			ySize = 1000*.097f;
+			texture = new Texture(Gdx.files.internal("data/flies/mediumFly.png"));
+			texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			
+			region = new TextureRegion(texture, 0, 0, 212, 143);
+			
+			fly_sprite = new Sprite(region);
+			fly_sprite.setSize(1000*.115f, 1000*.097f);
+			fly_sprite.setOrigin(fly_sprite.getWidth()/2, fly_sprite.getHeight()/2);
+			fly_sprite.setPosition(x, y);
+			
+			animation = new Animation(1/2f,
+					new TextureRegion(new Texture(Gdx.files.internal("data/flies/mediumFly.png")), 0, 0, 212, 143),
+					new TextureRegion(new Texture(Gdx.files.internal("data/flies/mediumFly1.png")), 0, 0, 212, 143)
+			);
+			animation.setPlayMode(Animation.LOOP);
+			break;
+		case 6: // large fly
+			xSize = 1000*.155f;
+			ySize = 1000*.135f;
+			texture = new Texture(Gdx.files.internal("data/flies/largeFly.png"));
+			texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			
+			region = new TextureRegion(texture, 0, 0, 212, 143);
+			
+			fly_sprite = new Sprite(region);
+			fly_sprite.setSize(1000*.155f, 1000*.135f);
+			fly_sprite.setOrigin(fly_sprite.getWidth()/2, fly_sprite.getHeight()/2);
+			fly_sprite.setPosition(x, y);
+			
+			animation = new Animation(1/2f,
+					new TextureRegion(new Texture(Gdx.files.internal("data/flies/largeFly.png")), 0, 0, 212, 143),
+					new TextureRegion(new Texture(Gdx.files.internal("data/flies/largeFly1.png")), 0, 0, 212, 143)
+			);
+			animation.setPlayMode(Animation.LOOP);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	public void update() {
+		
+	}
+	
+	public void draw(SpriteBatch batch, float dt) {
+		breakOutTimer += dt;
+//		fly_sprite.draw(batch);
+		batch.draw(animation.getKeyFrame(time += dt*9), xCoord, yCoord, xSize, ySize);
+		switch (fly_size) {
+		case 1: // small fly
+			if (breakOutTimer > 11) {
+				escaped = true;
+			}
+			break;
+		case 2: // small fly
+			if (breakOutTimer > 11) {
+				escaped = true;
+			}
+			break;
+		case 3: // medium fly
+			if (breakOutTimer > 8) {
+				escaped = true;
+			}
+			break;
+		case 4: // large fly
+			if (breakOutTimer > 5) {
+				escaped = true;
+			}
+			break;
+		case 5: // medium fly
+			if (breakOutTimer > 8) {
+				escaped = true;
+			}
+			break;
+		case 6: // large fly
+			if (breakOutTimer > 5) {
+				escaped = true;
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	
+	// follow with actions or things affecting the fly
+	// ex. return the Fly for checks, animate actions
+	
+	public Sprite spriteReturn() {
+		return fly_sprite;
+	}
+}

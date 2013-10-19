@@ -40,7 +40,7 @@ public class GameScreen implements Screen, InputProcessor {
 	
 	private Array<HashMap<String, Float>> flySlots;
 	private Array<Integer> flyCheck;
-	private int fliesEscaped, fightingFlySlot, difficulty = 0, score = 0, smallFly = 0, mediumFly = 0, largeFly = 0, timesFought = 0;
+	private int fliesEscaped, fightingFlySlot, difficulty = 0, staticDifficulty = 0, score = 0, smallFly = 0, mediumFly = 0, largeFly = 0, timesFought = 0;
 	GoogleInterface platformInterface;
 	FreeTypeBitmapFontData font;
 	private BitmapFont scoreText;
@@ -112,25 +112,33 @@ public class GameScreen implements Screen, InputProcessor {
 		
 		if (difficulty > 0) {
 			
-			if (totalTime > 60 && loggedIn) {
-				if (difficulty == 1 && survived != true) {
+			if (totalTime > 60) {
+				if (difficulty == 1) {
+					difficulty += 1;
+				}
+				if (totalTime > 120) {
+					if (difficulty == 2) {
+						difficulty += 1;
+					}
+				}
+				if (staticDifficulty == 1 && survived != true && loggedIn) {
 					platformInterface.unlockAchievement("ach_survive");
 					survived = true;
-				} else if (difficulty == 2 && survivedMedium != true) {
+				} else if (staticDifficulty == 2 && survivedMedium != true && loggedIn) {
 					platformInterface.unlockAchievement("ach_surviveMedium");
 					survivedMedium = true;
-				} else if (difficulty == 3 && survivedHard != true) {
+				} else if (staticDifficulty == 3 && survivedHard != true && loggedIn) {
 					platformInterface.unlockAchievement("ach_surviveHard");
 					survivedHard = true;
 				}
-			}
-			if (fliesEscaped < (6 - difficulty)) {     										//----// NORMAL GAMEPLAY
+			}																//============// Setting difficulty
+			if (fliesEscaped < (6 - staticDifficulty)) {
 				totalTime += dt;
 				spawn_timer += dt;
 				if (spawn_timer >= (modifier - difficulty)) {
 					modifier -= dt;
-					if (modifier <= difficulty + 1) {
-						modifier = difficulty +1;
+					if (modifier <= 3.1f) {
+						modifier = 3.1f;
 					}
 					Gdx.app.log("MODIFIER", ""+modifier);
 					spawn_timer = 0;
@@ -143,7 +151,7 @@ public class GameScreen implements Screen, InputProcessor {
 					for (int i = 0; i < spawnNumber; i++) {
 						spawnFly();
 					}
-				}
+				}     																			//----// NORMAL GAMEPLAY
 				leaf_back.draw(batch);
 				sprite.draw(batch);
 				
@@ -194,19 +202,19 @@ public class GameScreen implements Screen, InputProcessor {
 							
 							switch (fly.fly_size) {
 							case 1: // small fly
-								score += (int) ((totalTime/5) + 1)  * (5 * difficulty);
+								score += (int) ((totalTime/5) + 1)  * (5 * staticDifficulty);
 								smallFly += 1;
 								break;
 							case 2: // small fly
-								score += (int) ((totalTime/5) + 1) * (5 * difficulty);
+								score += (int) ((totalTime/5) + 1) * (5 * staticDifficulty);
 								smallFly += 1;
 								break;
 							case 3: // medium fly
-								score += (int) ((totalTime/5) + 1) * (10 * difficulty);
+								score += (int) ((totalTime/5) + 1) * (10 * staticDifficulty);
 								mediumFly += 1;
 								break;
 							case 4: // large fly
-								score += (int) ((totalTime/5) + 1) * (15 * difficulty);
+								score += (int) ((totalTime/5) + 1) * (15 * staticDifficulty);
 								largeFly += 1;
 								break;
 							case 5: // medium fly
@@ -221,15 +229,17 @@ public class GameScreen implements Screen, InputProcessor {
 								break;
 							}
 							timesFought += 1;
+							fly.dispose();
 							flies.removeValue(fly, true);
 						} else if (fly.escaped) {
 							fliesEscaped += 1;
 							for (Web web : webbing) {
 								if (web.slotNumber == fly.slotNumber) {
+									web.texture.dispose();
 									web.breakWeb();
 								}
 							}
-							fly.texture.dispose();
+							fly.dispose();
 							flies.removeValue(fly, true);
 						}
 					}
@@ -256,33 +266,16 @@ public class GameScreen implements Screen, InputProcessor {
 							platformInterface.incrementAchievement("ach_brawlin", timesFought);
 							timesFought = 0;
 						}
-
-						if (smallFly > 0) {
-							platformInterface.incrementAchievement("ach_smallFry", smallFly);
-						}
-						if (mediumFly > 0) {
-							platformInterface.incrementAchievement("ach_middleMan", mediumFly);
-						}
-						if (largeFly > 0) {
-							platformInterface.incrementAchievement("ach_heavyLift", largeFly);
-						}
-						if (timesFought > 0) {
-							platformInterface.incrementAchievement("ach_brawlin", timesFought);
-						}
-						smallFly = 0;
-						mediumFly = 0;
-						largeFly = 0;
-						timesFought = 0;
 					}
 				}
 				if (totalTime > 0) {
 					modifier = 6;
 					totalTime = 0;
 					for (Fly fly : flies) {
-						fly.texture.dispose();
+						fly.dispose();
 					}
 					for (Web web : webbing) {
-						web.texture.dispose();
+						web.dispose();
 					}
 					flies.clear();
 					webbing.clear();
@@ -335,20 +328,34 @@ public class GameScreen implements Screen, InputProcessor {
 	@Override
 	public void dispose() {
 		if (loggedIn) {
-			platformInterface.submitScore(score);
-			platformInterface.incrementAchievement("ach_smallFry", smallFly);
-			platformInterface.incrementAchievement("ach_middleMan", mediumFly);
-			platformInterface.incrementAchievement("ach_heavyLift", largeFly);
-			platformInterface.incrementAchievement("ach_brawlin", timesFought);
+			if (score > 0) {
+				platformInterface.submitScore(score);
+			}
+			if (smallFly > 0 && loggedIn) {
+				platformInterface.incrementAchievement("ach_smallFry", smallFly);
+				smallFly = 0;
+			}
+			if (mediumFly > 0 && loggedIn) {
+				platformInterface.incrementAchievement("ach_middleMan", mediumFly);
+				mediumFly = 0;
+			}
+			if (largeFly > 0 && loggedIn) {
+				platformInterface.incrementAchievement("ach_heavyLift", largeFly);
+				largeFly = 0;
+			}
+			if (timesFought > 0 && loggedIn) {
+				platformInterface.incrementAchievement("ach_brawlin", timesFought);
+				timesFought = 0;
+			}
 		}
 		batch.dispose();
 		texture.dispose();
 		scoreText.dispose();
 		for (Fly fly : flies) {
-			fly.texture.dispose();
+			fly.dispose();
 		}
 		for (Web web : webbing) {
-			web.texture.dispose();
+			web.dispose();
 		}
 		
 	}
@@ -384,10 +391,13 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 		if (difficulty == 0 && easy.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
 			difficulty = 1;
+			staticDifficulty = 1;
 		} else if (difficulty == 0 && medium.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
 			difficulty = 2;
+			staticDifficulty = 2;
 		} else if (difficulty == 0 && hard.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
 			difficulty = 3;
+			staticDifficulty = 3;
 		}
 		
 		move_spider = false;
@@ -731,5 +741,6 @@ public class GameScreen implements Screen, InputProcessor {
 	
 	@Override
 	public void hide() {
+		dispose();
 	}
 }

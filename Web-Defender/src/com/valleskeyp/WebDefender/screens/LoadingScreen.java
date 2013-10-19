@@ -22,7 +22,7 @@ public class LoadingScreen implements Screen, InputProcessor {
 	GoogleInterface platformInterface;
 	
 	private float loaded = 0;
-	private boolean appeared = true;;
+	private boolean appeared = true;
 	
 	public LoadingScreen(GoogleInterface aInterface) {
 		platformInterface = aInterface;
@@ -125,8 +125,7 @@ public class LoadingScreen implements Screen, InputProcessor {
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-		
+		dispose();
 	}
 
 	@Override

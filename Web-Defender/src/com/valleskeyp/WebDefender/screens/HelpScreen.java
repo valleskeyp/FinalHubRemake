@@ -116,8 +116,7 @@ public class HelpScreen implements Screen, InputProcessor {
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-		
+		dispose();
 	}
 
 	@Override
